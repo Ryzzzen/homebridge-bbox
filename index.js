@@ -61,11 +61,11 @@ class BboxPlatform {
   configureAccessory (accessory) {
     console.dir(accessory);
 
-    this.log(accessory.name, "Configure Accessory");
+    this.log(accessory.displayName, "Configure Accessory");
 
     var platform = this;
 
-    if (platform.config.devicesToShow && !platform.config.devicesToShow.includes(accessory.name) && !platform.config.devicesToShow.includes(accessory.context.id))
+    if (platform.config.devicesToShow && !platform.config.devicesToShow.includes(accessory.displayName) && !platform.config.devicesToShow.includes(accessory.context.id))
     {
       accessory.reachable = false;
       this.accessories.push(accessory);
@@ -75,7 +75,7 @@ class BboxPlatform {
     else accessory.reachable = true;
 
     accessory.on('identify', function(paired, callback) {
-      platform.log(accessory.name, "Identifying");
+      platform.log(accessory.displayName, "Identifying");
       callback();
     });
 
@@ -89,7 +89,7 @@ class BboxPlatform {
     }
 
     let conf = this.config.devicesConfig[accessory.context.id];
-    if (conf && conf.name) accessory.displayName = accessory.name = conf.name;
+    if (conf && conf.name) accessory.displayName = conf.name;
 
     let accessoryInformationService = accessory.getService(Service.AccessoryInformation) || accessory.addService(Service.AccessoryInformation);
 
@@ -116,11 +116,11 @@ class BboxPlatform {
 
     accessory = new Accessory(accessoryName, UUID);
 
-    if (conf[id] && conf[id].name) accessory.displayName = accessory.name = conf[id].name;
-    else accessory.displayName = accessory.name = accessoryName;
+    if (conf[id] && conf[id].name) accessory.displayName = conf[id].name;
+    else accessory.displayName = accessoryName;
 
     accessory.on('identify', function(paired, callback) {
-      this.log(accessory.name, "Identifying");
+      this.log(accessory.displayName, "Identifying");
       callback();
     });
 
@@ -155,7 +155,7 @@ class BboxPlatform {
   }
 
   isOnline(platform, callback) {
-    platform.log(accessory.name, "Trigger isOnline -> " + value);
+    platform.log(accessory.displayName, "Trigger isOnline -> " + value);
 
     console.dir(platform.devices[this.context.id].active)
     this.context.online = platform.devices[this.context.id].active == 1;
