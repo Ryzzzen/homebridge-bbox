@@ -44,7 +44,7 @@ class BboxPlatform {
         }
       }.bind(this));
 
-    }.bind(this), 2000);
+    }, 2000);
 
     if (!api) return;
 
@@ -112,7 +112,7 @@ class BboxPlatform {
     platform.log(accessory.name, "Trigger isOnline -> " + value);
 
     this.context.online = platform.devices[this.context.id].lastseen == '-1';
-    
+
     this.log(`calling isOnline`, this.context.online);
     callback(null, this.context.online);
   }
