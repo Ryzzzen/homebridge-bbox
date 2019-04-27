@@ -95,7 +95,7 @@ class BboxPlatform {
     this.accessories.push(accessory);
   }
 
-  addAccessory(accessoryName, id) {
+  addAccessory(accessoryName, id, conf = this.config.devicesConfig) {
     const UUID = UUIDGen.generate(id);
     let accessory = this.accessories.find(x => x.UUID === UUID);
 
@@ -107,9 +107,9 @@ class BboxPlatform {
 
     this.log(accessoryName, "Adding Accessory");
 
-    accessory = new Accessory(accessoryName, UUID), conf = this.config.devicesConfig[id];
+    accessory = new Accessory(accessoryName, UUID);
 
-    if (this.config.devicesConfig[id] && conf.name) accessory.displayName = accessory.name = conf.name;
+    if (conf[id] && conf[id].name) accessory.displayName = accessory.name = conf[id].name;
     else accessory.displayName = accessory.name = accessoryName;
 
     accessory.on('identify', function(paired, callback) {
