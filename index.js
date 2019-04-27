@@ -70,7 +70,10 @@ class BboxPlatform {
     if (accessory.getService(Service.ContactSensor)) {
       accessory.getService(Service.ContactSensor)
       .getCharacteristic(Characteristic.StatusActive)
-      .on('get', cb => platform.isOnline.bind(accessory, this, cb));
+      .on('get', cb => {
+        this.log(accessory.displayName, "isOnline");
+        this.isOnline.bind(accessory, this, cb);
+      });
     }
 
     let conf = this.config.devicesConfig[accessory.context.id];
@@ -112,7 +115,10 @@ class BboxPlatform {
 
     accessory.addService(Service.ContactSensor, accessoryName + ': présent')
     .getCharacteristic(Characteristic.StatusActive)
-    .on('get', cb => this.isOnline.bind(accessory, this, cb));
+    .on('get', cb => {
+      this.log(accessory.displayName, "isOnline");
+      this.isOnline.bind(accessory, this, cb);
+    });
 
     let accessoryInformationService = accessory.getService(Service.AccessoryInformation) || accessory.addService(Service.AccessoryInformation);
 
