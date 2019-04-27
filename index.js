@@ -20,38 +20,37 @@ class BboxPlatform {
     this.config = config;
     this.accessories = [];
 
-    setInterval(() => {
-      request('https://mabbox.bytel.fr/api/v1/hosts', function(err, res, body) {
-        if (!err && res.statusCode == 200) {
-          this.devices = {};
-
-          JSON.parse(body)[0].hosts.list.forEach(x => {
-            this.devices[x.macaddress] = x;
-            this.addAccessory(x.hostname || `Device #${x.id}`, x.macaddress);
-          });
-
-          if (this.isUnreachable) {
-            this.accessories.forEach(x => {
-              x.reachable = true;
-              x.updateReachability();
-            });
-          }
-        }
-        else {
-          this.isUnreachable = true;
-          this.accessories.forEach(x => {
-            x.reachable = false;
-            x.updateReachability();
-          });
-        }
-      }.bind(this));
-
-    }, 2000);
-
     if (!api) return;
     this.api = api;
 
-    this.api.on('didFinishLaunching', () => this.log('DidFinishLaunching'));
+    this.api.on('didFinishLaunching', () => {
+      setInterval(() => {
+        request('https://mabbox.bytel.fr/api/v1/hosts', function(err, res, body) {
+          if (!err && res.statusCode == 200) {
+            this.devices = {};
+
+            JSON.parse(body)[0].hosts.list.forEach(x => {
+              this.devices[x.macaddress] = x;
+              this.addAccessory(x.hostname || `Device #${x.id}`, x.macaddress);
+            });
+
+            if (this.isUnreachable) {
+              this.accessories.forEach(x => {
+                x.reachable = true;
+                x.updateReachability();
+              });
+            }
+          }
+          else {
+            this.isUnreachable = true;
+            this.accessories.forEach(x => {
+              x.reachable = false;
+              x.updateReachability();
+            });
+          }
+        }.bind(this));
+      }, 2000);
+    });
   }
 
   configureAccessory (accessory) {
@@ -85,7 +84,7 @@ class BboxPlatform {
     const UUID = UUIDGen.generate(accessoryName);
 
     if (platform.accessories.some(x => x.UUID === UUID))
-      return platform.log(accessoryName, "Accessory already exists");
+    return platform.log(accessoryName, "Accessory already exists");
 
     var accessory = new Accessory(accessoryName, UUID);
     accessory.displayName = accessory.name = accessoryName;
