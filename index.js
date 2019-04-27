@@ -26,8 +26,10 @@ class BboxPlatform {
           this.devices = {};
 
           JSON.parse(body)[0].hosts.list.forEach(x => {
-            this.devices[x.id] = x;
-            this.addAccessory(x.hostname, x.id);
+            console.dir(x);
+
+            this.devices[x.macaddress] = x;
+            this.addAccessory(x.hostname, x.macaddress);
           });
 
           if (this.isUnreachable) {
