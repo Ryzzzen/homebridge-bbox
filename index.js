@@ -47,7 +47,8 @@ class BboxPlatform {
     }, 2000);
 
     if (!api) return;
-
+    this.api = api;
+    
     this.api.on('didFinishLaunching', function() {
       platform.log("DidFinishLaunching");
     }.bind(this));
