@@ -26,8 +26,6 @@ class BboxPlatform {
           this.devices = {};
 
           JSON.parse(body)[0].hosts.list.forEach(x => {
-            console.dir(x);
-
             this.devices[x.macaddress] = x;
             this.addAccessory(x.hostname || `Device #${x.id}`, x.macaddress);
           });
@@ -76,8 +74,6 @@ class BboxPlatform {
       .getCharacteristic(Characteristic.StatusActive)
       .on('get', platform.isOnline.bind(this));
     }
-
-    console.dir(accessory);
 
     this.accessories.push(accessory);
   }
