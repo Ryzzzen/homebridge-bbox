@@ -29,7 +29,7 @@ class BboxPlatform {
             console.dir(x);
 
             this.devices[x.macaddress] = x;
-            this.addAccessory(x.hostname, x.macaddress);
+            this.addAccessory(x.hostname || `Device #${x.id}`, x.macaddress);
           });
 
           if (this.isUnreachable) {
@@ -89,7 +89,7 @@ class BboxPlatform {
     const UUID = UUIDGen.generate(accessoryName);
 
     if (platform.accessories.some(x => x.UUID === UUID))
-      return platform.log(accessory.name, "Accessory already exists");
+      return platform.log(accessoryName, "Accessory already exists");
 
     var accessory = new Accessory(accessoryName, UUID);
     accessory.displayName = accessory.name = accessoryName;
