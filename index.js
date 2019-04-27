@@ -20,7 +20,7 @@ class BboxPlatform {
 
     setInterval(() => {
       request('https://mabbox.bytel.fr/api/v1/hosts', function(err, res, body) {
-        if (!error && res.statusCode == 200) {
+        if (!err && res.statusCode == 200) {
           this.devices = {};
 
           JSON.parse(body)[0].hosts.list.forEach(x => {
@@ -48,10 +48,8 @@ class BboxPlatform {
 
     if (!api) return;
     this.api = api;
-    
-    this.api.on('didFinishLaunching', function() {
-      platform.log("DidFinishLaunching");
-    }.bind(this));
+
+    this.api.on('didFinishLaunching', () => this.log('DidFinishLaunching'));
   }
 
   configureAccessory (accessory) {
