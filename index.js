@@ -58,13 +58,12 @@ class BboxPlatform {
 
     var platform = this;
 
-    // Set the accessory to reachable if plugin can currently process the accessory,
-    // otherwise set to false and update the reachability later by invoking
-    // accessory.updateReachability()
-    accessory.reachable = true;
+    if (platform.config.devicesToShow && !platform.config.devicesToShow.includes(accessory.name) && !platform.config.devicesToShow.includes(accessory.context.id))
+      return accessory.reachable = false;
+    else accessory.reachable = true;
 
     accessory.on('identify', function(paired, callback) {
-      platform.log(accessory.name, "Identify!!!");
+      platform.log(accessory.name, "Identifying");
       callback();
     });
 
@@ -78,16 +77,22 @@ class BboxPlatform {
   }
 
   addAccessory(accessoryName, id) {
+    const UUID = UUIDGen.generate(id);
+
+    if (platform.accessories.some(x => x.UUID === UUID))
+      return;
+
+    if (platform.config.devicesToShow && !platform.config.devicesToShow.includes(accessoryName) && !platform.config.devicesToShow.includes(id))
+      return;
+
     this.log(accessoryName, "Adding Accessory");
 
     let platform = this;
-    const UUID = UUIDGen.generate(accessoryName);
 
-    if (platform.accessories.some(x => x.UUID === UUID))
-    return platform.log(accessoryName, "Accessory already exists");
+    let accessory = new Accessory(accessoryName, UUID), conf = platform.config.devicesConfig[id];
 
-    var accessory = new Accessory(accessoryName, UUID);
-    accessory.displayName = accessory.name = accessoryName;
+    if (conf.name) accessory.displayName = accessory.name = conf.name;
+    else accessory.displayName = accessory.name = accessoryName;
 
     accessory.on('identify', function(paired, callback) {
       platform.log(accessory.name, "Identifying");
@@ -99,7 +104,7 @@ class BboxPlatform {
     // accessory.context.something = "Something"
 
     // Make sure you provided a name for service, otherwise it may not visible in some HomeKit apps
-    accessory.addService(Service.ContactSensor, 'Connecté')
+    accessory.addService(Service.ContactSensor, accessoryName + ': présent')
     .getCharacteristic(Characteristic.StatusActive)
     .on('get', cb => platform.isOnline.bind(this, platform, cb));
 
