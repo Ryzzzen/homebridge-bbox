@@ -73,6 +73,19 @@ class BboxPlatform {
       .on('get', cb => platform.isOnline.bind(accessory, this, cb));
     }
 
+    let conf = this.config.devicesConfig[id];
+
+    if (conf && conf.name) accessory.displayName = accessory.name = conf.name;
+    else accessory.displayName = accessory.name = accessoryName;
+
+    let accessoryInformationService = accessory.getService(Service.AccessoryInformation) || accessory.addService(Service.AccessoryInformation));
+
+    accessoryInformationService
+    .setCharacteristic(Characteristic.Name, accessory.displayName)
+    .setCharacteristic(Characteristic.Manufacturer, 'Ryzzzen')
+    .setCharacteristic(Characteristic.Model, 'homebridge-bbox')
+    .setCharacteristic(Characteristic.SerialNumber, id);
+
     this.accessories.push(accessory);
   }
 
@@ -100,11 +113,16 @@ class BboxPlatform {
     accessory.context.id = id;
 
     accessory.addService(Service.ContactSensor, accessoryName + ': présent')
-    .setCharacteristic(Characteristic.Manufacturer, 'Ryzzzen')
-    .setCharacteristic(Characteristic.Model, 'homebridge-bbox')
-    .setCharacteristic(Characteristic.SerialNumber, id)
     .getCharacteristic(Characteristic.StatusActive)
     .on('get', cb => this.isOnline.bind(this, this, cb));
+
+    let accessoryInformationService = accessory.getService(Service.AccessoryInformation) || accessory.addService(Service.AccessoryInformation));
+
+    accessoryInformationService
+    .setCharacteristic(Characteristic.Name, accessory.displayName)
+    .setCharacteristic(Characteristic.Manufacturer, 'Ryzzzen')
+    .setCharacteristic(Characteristic.Model, 'homebridge-bbox')
+    .setCharacteristic(Characteristic.SerialNumber, id);
 
     this.accessories.push(accessory);
     this.api.registerPlatformAccessories('homebridge-bbox', "BboxPlatform", [accessory]);
