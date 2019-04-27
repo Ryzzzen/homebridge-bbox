@@ -110,7 +110,7 @@ class BboxPlatform {
       return accessory;
 
     if (this.config.devicesToShow && !this.config.devicesToShow.includes(accessoryName) && !this.config.devicesToShow.includes(id))
-      return;
+      return accessory;
 
     this.log(accessoryName, "Adding Accessory");
 
