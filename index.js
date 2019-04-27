@@ -9,7 +9,7 @@ module.exports = homebridge => {
   Characteristic = homebridge.hap.Characteristic;
   UUIDGen = homebridge.hap.uuid;
 
-  homebridge.registerAccessory('homebridge-bbox', 'BboxPlatform', BboxPlatform);
+  homebridge.registerPlatform('homebridge-bbox', 'BboxPlatform', BboxPlatform, true);
 }
 
 class BboxPlatform {
