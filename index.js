@@ -78,7 +78,7 @@ class BboxPlatform {
     if (conf && conf.name) accessory.displayName = accessory.name = conf.name;
     else accessory.displayName = accessory.name = accessoryName;
 
-    let accessoryInformationService = accessory.getService(Service.AccessoryInformation) || accessory.addService(Service.AccessoryInformation));
+    let accessoryInformationService = accessory.getService(Service.AccessoryInformation) || accessory.addService(Service.AccessoryInformation);
 
     accessoryInformationService
     .setCharacteristic(Characteristic.Name, accessory.displayName)
@@ -116,7 +116,7 @@ class BboxPlatform {
     .getCharacteristic(Characteristic.StatusActive)
     .on('get', cb => this.isOnline.bind(this, this, cb));
 
-    let accessoryInformationService = accessory.getService(Service.AccessoryInformation) || accessory.addService(Service.AccessoryInformation));
+    let accessoryInformationService = accessory.getService(Service.AccessoryInformation) || accessory.addService(Service.AccessoryInformation);
 
     accessoryInformationService
     .setCharacteristic(Characteristic.Name, accessory.displayName)
