@@ -77,6 +77,8 @@ class BboxPlatform {
       .on('get', platform.isOnline.bind(this));
     }
 
+    console.dir(accessory);
+
     this.accessories.push(accessory);
   }
 
@@ -84,8 +86,14 @@ class BboxPlatform {
     this.log(accessoryName, "Adding Accessory");
 
     let platform = this;
+    const UUID = UUIDGen.generate(accessoryName);
 
-    var accessory = new Accessory(accessoryName, UUIDGen.generate(id));
+    if (platform.accessories.some(x => x.UUID === UUID))
+      return platform.log(accessory.name, "Accessory already exists");
+
+    var accessory = new Accessory(accessoryName, UUID);
+    accessory.displayName = accessory.name = accessoryName;
+
     accessory.on('identify', function(paired, callback) {
       platform.log(accessory.name, "Identifying");
       callback();
