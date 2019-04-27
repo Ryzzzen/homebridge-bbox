@@ -87,8 +87,6 @@ class BboxPlatform {
 
     this.log(accessoryName, "Adding Accessory");
 
-    let this = this;
-
     let accessory = new Accessory(accessoryName, UUID), conf = this.config.devicesConfig[id];
 
     if (conf.name) accessory.displayName = accessory.name = conf.name;
@@ -100,10 +98,7 @@ class BboxPlatform {
     });
 
     accessory.context.id = id;
-    // Plugin can save context on accessory to help restore accessory in configureAccessory()
-    // accessory.context.something = "Something"
 
-    // Make sure you provided a name for service, otherwise it may not visible in some HomeKit apps
     accessory.addService(Service.ContactSensor, accessoryName + ': présent')
     .getCharacteristic(Characteristic.StatusActive)
     .on('get', cb => this.isOnline.bind(this, this, cb));
