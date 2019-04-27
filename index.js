@@ -112,7 +112,7 @@ class BboxPlatform {
 
     accessory.addService(Service.ContactSensor, accessoryName + ': présent')
     .getCharacteristic(Characteristic.StatusActive)
-    .on('get', cb => this.isOnline.bind(this, this, cb));
+    .on('get', cb => this.isOnline.bind(accessory, this, cb));
 
     let accessoryInformationService = accessory.getService(Service.AccessoryInformation) || accessory.addService(Service.AccessoryInformation);
 
