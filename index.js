@@ -106,8 +106,6 @@ class BboxPlatform {
     .getCharacteristic(Characteristic.StatusActive)
     .on('get', cb => this.isOnline.bind(this, this, cb));
 
-    accessory.addService(informationService);
-
     this.accessories.push(accessory);
     this.api.registerPlatformAccessories('homebridge-bbox', "BboxPlatform", [accessory]);
   }
