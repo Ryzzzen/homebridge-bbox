@@ -2,9 +2,11 @@
 
 const request = require('request');
 
-let Service, Characteristic, UUIDGen;
+let Accessory, Service, Characteristic, UUIDGen;
 
 module.exports = homebridge => {
+  Accessory = homebridge.platformAccessory;
+
   Service = homebridge.hap.Service;
   Characteristic = homebridge.hap.Characteristic;
   UUIDGen = homebridge.hap.uuid;
