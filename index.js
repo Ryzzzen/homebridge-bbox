@@ -73,10 +73,8 @@ class BboxPlatform {
       .on('get', cb => platform.isOnline.bind(accessory, this, cb));
     }
 
-    let conf = this.config.devicesConfig[id];
-
+    let conf = this.config.devicesConfig[accessory.context.id];
     if (conf && conf.name) accessory.displayName = accessory.name = conf.name;
-    else accessory.displayName = accessory.name = accessoryName;
 
     let accessoryInformationService = accessory.getService(Service.AccessoryInformation) || accessory.addService(Service.AccessoryInformation);
 
