@@ -70,7 +70,7 @@ class BboxPlatform {
     if (accessory.getService(Service.ContactSensor)) {
       accessory.getService(Service.ContactSensor)
       .getCharacteristic(Characteristic.StatusActive)
-      .on('get', platform.isOnline.bind(this));
+      .on('get', cb => platform.isOnline.bind(accessory, this, cb));
     }
 
     this.accessories.push(accessory);
@@ -117,6 +117,7 @@ class BboxPlatform {
   isOnline(platform, callback) {
     platform.log(accessory.name, "Trigger isOnline -> " + value);
 
+    console.dir(platform.devices[this.context.id].lastseen)
     this.context.online = platform.devices[this.context.id].lastseen == '-1';
 
     this.log(`calling isOnline`, this.context.online);
