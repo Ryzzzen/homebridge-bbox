@@ -59,6 +59,8 @@ class BboxPlatform {
   }
 
   configureAccessory (accessory) {
+    console.dir(accessory);
+    
     this.log(accessory.name, "Configure Accessory");
 
     var platform = this;
