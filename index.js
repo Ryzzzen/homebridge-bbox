@@ -30,8 +30,10 @@ class BboxPlatform {
             this.devices = {};
 
             JSON.parse(body)[0].hosts.list.forEach(x => {
-              this.devices[x.macaddress] = x;
               let accessory = this.addAccessory(x.hostname || `Device #${x.id}`, x.macaddress);
+              if (!accessory) return;
+
+              this.devices[x.macaddress] = x;
 
               accessory
               .getService(Service.ContactSensor)
@@ -110,7 +112,7 @@ class BboxPlatform {
       return accessory;
 
     if (this.config.devicesToShow && !this.config.devicesToShow.includes(accessoryName) && !this.config.devicesToShow.includes(id))
-      return accessory;
+      return;
 
     this.log(accessoryName, "Adding Accessory");
 
