@@ -60,13 +60,18 @@ class BboxPlatform {
 
   configureAccessory (accessory) {
     console.dir(accessory);
-    
+
     this.log(accessory.name, "Configure Accessory");
 
     var platform = this;
 
     if (platform.config.devicesToShow && !platform.config.devicesToShow.includes(accessory.name) && !platform.config.devicesToShow.includes(accessory.context.id))
-      return accessory.reachable = false;
+    {
+      accessory.reachable = false;
+      this.accessories.push(accessory);
+
+      return accessory;
+    }
     else accessory.reachable = true;
 
     accessory.on('identify', function(paired, callback) {
