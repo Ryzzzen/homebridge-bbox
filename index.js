@@ -100,15 +100,11 @@ class BboxPlatform {
     accessory.context.id = id;
 
     accessory.addService(Service.ContactSensor, accessoryName + ': présent')
+    .setCharacteristic(Characteristic.Manufacturer, 'Ryzzzen')
+    .setCharacteristic(Characteristic.Model, 'homebridge-bbox')
+    .setCharacteristic(Characteristic.SerialNumber, id)
     .getCharacteristic(Characteristic.StatusActive)
     .on('get', cb => this.isOnline.bind(this, this, cb));
-
-    let informationService = new Service.AccessoryInformation();
-
-    informationService
-      .setCharacteristic(Characteristic.Manufacturer, 'Ryzzzen')
-      .setCharacteristic(Characteristic.Model, 'homebridge-bbox')
-      .setCharacteristic(Characteristic.SerialNumber, id);
 
     accessory.addService(informationService);
 
