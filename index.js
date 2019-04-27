@@ -109,7 +109,7 @@ class BboxPlatform {
 
     accessory = new Accessory(accessoryName, UUID), conf = this.config.devicesConfig[id];
 
-    if (conf && conf.name) accessory.displayName = accessory.name = conf.name;
+    if (this.config.devicesConfig[id] && conf.name) accessory.displayName = accessory.name = conf.name;
     else accessory.displayName = accessory.name = accessoryName;
 
     accessory.on('identify', function(paired, callback) {
