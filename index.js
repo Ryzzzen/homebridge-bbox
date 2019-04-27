@@ -31,7 +31,7 @@ class BboxPlatform {
 
             JSON.parse(body)[0].hosts.list.forEach(x => {
               this.devices[x.macaddress] = x;
-              this.addAccessory(x.hostname || `Device #${x.id}`, x.macaddress);
+              this.addAccessory(x.hostname || `Device #${x.id}`, x.macaddress, this);
             });
 
             if (this.isUnreachable) {
@@ -76,7 +76,7 @@ class BboxPlatform {
     this.accessories.push(accessory);
   }
 
-  addAccessory(accessoryName, id) {
+  addAccessory(accessoryName, id, platform) {
     const UUID = UUIDGen.generate(id);
 
     if (platform.accessories.some(x => x.UUID === UUID))
