@@ -82,7 +82,7 @@ class BboxPlatform {
     .setCharacteristic(Characteristic.Name, accessory.displayName)
     .setCharacteristic(Characteristic.Manufacturer, 'Ryzzzen')
     .setCharacteristic(Characteristic.Model, 'homebridge-bbox')
-    .setCharacteristic(Characteristic.SerialNumber, id);
+    .setCharacteristic(Characteristic.SerialNumber, accessory.context.id);
 
     this.accessories.push(accessory);
   }
