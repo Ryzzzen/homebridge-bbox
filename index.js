@@ -103,6 +103,15 @@ class BboxPlatform {
     .getCharacteristic(Characteristic.StatusActive)
     .on('get', cb => this.isOnline.bind(this, this, cb));
 
+    let informationService = new Service.AccessoryInformation();
+
+    informationService
+      .setCharacteristic(Characteristic.Manufacturer, 'Ryzzzen')
+      .setCharacteristic(Characteristic.Model, 'homebridge-bbox')
+      .setCharacteristic(Characteristic.SerialNumber, id);
+
+    accessory.addService(informationService);
+
     this.accessories.push(accessory);
     this.api.registerPlatformAccessories('homebridge-bbox', "BboxPlatform", [accessory]);
   }
@@ -117,8 +126,8 @@ class BboxPlatform {
   isOnline(platform, callback) {
     platform.log(accessory.name, "Trigger isOnline -> " + value);
 
-    console.dir(platform.devices[this.context.id].lastseen)
-    this.context.online = platform.devices[this.context.id].lastseen == '-1';
+    console.dir(platform.devices[this.context.id].active)
+    this.context.online = platform.devices[this.context.id].active == 1;
 
     this.log(`calling isOnline`, this.context.online);
     callback(null, this.context.online);
