@@ -31,7 +31,7 @@ class BboxPlatform {
 
             JSON.parse(body)[0].hosts.list.forEach(x => {
               this.devices[x.macaddress] = x;
-              this.addAccessory(x.hostname || `Device #${x.id}`, x.macaddress, this);
+              this.addAccessory(x.hostname || `Device #${x.id}`, x.macaddress);
             });
 
             if (this.isUnreachable) {
@@ -76,26 +76,26 @@ class BboxPlatform {
     this.accessories.push(accessory);
   }
 
-  addAccessory(accessoryName, id, platform) {
+  addAccessory(accessoryName, id) {
     const UUID = UUIDGen.generate(id);
 
-    if (platform.accessories.some(x => x.UUID === UUID))
+    if (this.accessories.some(x => x.UUID === UUID))
       return;
 
-    if (platform.config.devicesToShow && !platform.config.devicesToShow.includes(accessoryName) && !platform.config.devicesToShow.includes(id))
+    if (this.config.devicesToShow && !this.config.devicesToShow.includes(accessoryName) && !this.config.devicesToShow.includes(id))
       return;
 
     this.log(accessoryName, "Adding Accessory");
 
-    let platform = this;
+    let this = this;
 
-    let accessory = new Accessory(accessoryName, UUID), conf = platform.config.devicesConfig[id];
+    let accessory = new Accessory(accessoryName, UUID), conf = this.config.devicesConfig[id];
 
     if (conf.name) accessory.displayName = accessory.name = conf.name;
     else accessory.displayName = accessory.name = accessoryName;
 
     accessory.on('identify', function(paired, callback) {
-      platform.log(accessory.name, "Identifying");
+      this.log(accessory.name, "Identifying");
       callback();
     });
 
@@ -106,7 +106,7 @@ class BboxPlatform {
     // Make sure you provided a name for service, otherwise it may not visible in some HomeKit apps
     accessory.addService(Service.ContactSensor, accessoryName + ': présent')
     .getCharacteristic(Characteristic.StatusActive)
-    .on('get', cb => platform.isOnline.bind(this, platform, cb));
+    .on('get', cb => this.isOnline.bind(this, this, cb));
 
     this.accessories.push(accessory);
     this.api.registerPlatformAccessories('homebridge-bbox', "BboxPlatform", [accessory]);
