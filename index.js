@@ -73,7 +73,7 @@ class BboxPlatform {
 
     if (accessory.getService(Service.ContactSensor)) {
       accessory.getService(Service.ContactSensor)
-      .getCharacteristic(Characteristic.On)
+      .getCharacteristic(Characteristic.StatusActive)
       .on('get', platform.isOnline.bind(this));
     }
 
@@ -105,7 +105,7 @@ class BboxPlatform {
 
     // Make sure you provided a name for service, otherwise it may not visible in some HomeKit apps
     accessory.addService(Service.ContactSensor, 'Connecté')
-    .getCharacteristic(Characteristic.On)
+    .getCharacteristic(Characteristic.StatusActive)
     .on('get', cb => platform.isOnline.bind(this, platform, cb));
 
     this.accessories.push(accessory);
