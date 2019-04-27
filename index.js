@@ -31,7 +31,12 @@ class BboxPlatform {
 
             JSON.parse(body)[0].hosts.list.forEach(x => {
               this.devices[x.macaddress] = x;
-              this.addAccessory(x.hostname || `Device #${x.id}`, x.macaddress);
+              let accessory = this.addAccessory(x.hostname || `Device #${x.id}`, x.macaddress);
+
+              accessory
+              .getService(Service.ContactSensor)
+              .getCharacteristic(Characteristic.ContactSensorState)
+              .setValue(x.active === 1);
             });
 
             if (this.isUnreachable) {
@@ -92,16 +97,17 @@ class BboxPlatform {
 
   addAccessory(accessoryName, id) {
     const UUID = UUIDGen.generate(id);
+    let accessory = this.accessories.find(x => x.UUID === UUID);
 
-    if (this.accessories.some(x => x.UUID === UUID))
-      return;
+    if (accessory)
+      return accessory;
 
     if (this.config.devicesToShow && !this.config.devicesToShow.includes(accessoryName) && !this.config.devicesToShow.includes(id))
       return;
 
     this.log(accessoryName, "Adding Accessory");
 
-    let accessory = new Accessory(accessoryName, UUID), conf = this.config.devicesConfig[id];
+    accessory = new Accessory(accessoryName, UUID), conf = this.config.devicesConfig[id];
 
     if (conf && conf.name) accessory.displayName = accessory.name = conf.name;
     else accessory.displayName = accessory.name = accessoryName;
@@ -130,6 +136,8 @@ class BboxPlatform {
 
     this.accessories.push(accessory);
     this.api.registerPlatformAccessories('homebridge-bbox', "BboxPlatform", [accessory]);
+
+    return accessory;
   }
 
   removeAccessory() {
