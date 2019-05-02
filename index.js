@@ -1,6 +1,7 @@
 'use strict'
 
 const request = require('request');
+const wol = require('wake_on_lan');
 
 let Accessory, Service, Characteristic, UUIDGen;
 
@@ -90,6 +91,16 @@ class BboxPlatform {
       });
     }
 
+    if (accessory.getService(Service.Switch)) {
+      accessory.getService(Service.Switch)
+      .getCharacteristic(Characteristic.StatusActive)
+      .on('get', cb => cb(null, false))
+      .on('set', cb => {
+        this.log(accessory.displayName, 'wake on lan trigger');
+        this.wake.bind(accessory, this, cb);
+      });
+    }
+
     let conf = this.config.devicesConfig[accessory.context.id];
     if (conf && conf.name) accessory.displayName = conf.name;
 
@@ -104,7 +115,7 @@ class BboxPlatform {
     this.accessories.push(accessory);
   }
 
-  addAccessory(accessoryName, id, conf = this.config.devicesConfig) {
+  addAccessory(accessoryName, id, conf = this.config.devicesConfig, options = { device: true, features: ['online'] }) {
     const UUID = UUIDGen.generate(id);
     let accessory = this.accessories.find(x => x.UUID === UUID);
 
@@ -128,12 +139,27 @@ class BboxPlatform {
 
     accessory.context.id = id;
 
-    accessory.addService(Service.ContactSensor, accessoryName + ': présent')
-    .getCharacteristic(Characteristic.StatusActive)
-    .on('get', cb => {
-      this.log(accessory.displayName, "isOnline");
-      this.isOnline.bind(accessory, this, cb);
-    });
+    let features = conf[id] && conf[id].features ? conf[id].features : options.features;
+    if (options.device) {
+      if (features.includes('online')) {
+        accessory.addService(Service.ContactSensor, accessoryName + ': présent')
+        .getCharacteristic(Characteristic.StatusActive)
+        .on('get', cb => {
+          this.log(accessory.displayName, "isOnline");
+          this.isOnline.bind(accessory, this, cb);
+        });
+      }
+
+      if (features.includes('wakeonlan')) {
+        accessory.addService(Service.Switch, accessoryName + ': ')
+        .getCharacteristic(Characteristic.On)
+        .on('get', cb => cb(null, false))
+        .on('set', cb => {
+          this.log(accessory.displayName, 'wake on lan trigger');
+          this.wake.bind(accessory, this, cb);
+        });
+      }
+    }
 
     let accessoryInformationService = accessory.getService(Service.AccessoryInformation) || accessory.addService(Service.AccessoryInformation);
 
@@ -157,12 +183,21 @@ class BboxPlatform {
   }
 
   isOnline(platform, callback) {
-    platform.log(accessory.displayName, "Trigger isOnline -> " + value);
-
-    console.dir(platform.devices[this.context.id].active)
     this.context.online = platform.devices[this.context.id].active == 1;
+    platform.log(accessory.displayName, "Trigger isOnline -> " + this.context.online);
 
     this.log(`calling isOnline`, this.context.online);
     callback(null, this.context.online);
+  }
+
+  wake(platform, callback) {
+    platform.log(accessory.displayName, "Triggered wake -> " + value);
+    console.dir(this);
+
+    wol.wake(this.context.id, err => {
+      if (err) return callback(err);
+
+      callback(null, false);
+    });
   }
 };
